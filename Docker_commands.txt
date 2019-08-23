@@ -1,0 +1,226 @@
+1.Docker was released in 2013 as a open source tool by dotcloud company , with in a year it became so big , so they closed the old company and started new comapny 
+  called "Docker.inc".
+
+2.Docker has 2 types of editions.
+   1.docker community Edition  (Docker CE-free open source version) - 
+        -it is really used for independent devlopers , for testing , for single person using.
+   2.Docker enterprise Edition (Docker EE -paid version)
+       -it is necessarily used for large origanization  that have lot of servers they need to run or for may be management GUI or LDAP authencation for active 
+         directories or for may be 24/7 support. for pricing(docker.com/pricing)
+   
+   3.Supporting life cycle and vesrioning of CE and EE
+    - Edge release vs stable relaese
+      1.Edage actually means beta in the docker world. it comes out every month and supports for a month until next beta come out.   
+      2.Stable actually come out for every quater(3 months). it supported for 4 months bec0z it kinda gives you that one month actullay to install the next quarterly 
+        stable upadate before they stop updating the previous one.
+      3.Docker's version is now YY.MM  based, using the month of its expected release, and the first one will be 17.03.0 , which is "the first point release" of the 
+        17.03  release. If any bug/security fixes are needed to that release, the first update will be 17.03.1  etc.                                                    
+
+3. There are 3 major types of installation -
+   1.Directly    - Directly install on supporting OS (Linux,Unix,Windows server 2016 supporting natively)
+   2.Mac/Windows - its not not direct installation, more suite of tools including GUI settings means docker directly not run mac/windows10 , background small vm has to 
+                   be start by docker to run containers (for mac,windows7/8,/10Home-Docker toolBox(legacy), Windows pro/enp-docker Desktop)        
+   3.cloud       - Docker for aws comes usally installed on Linux but they also come features specfic to cloud means it will come with cloud formation templeate, 
+                   persistent storage for storing databses, elastic load balancers. same for Azure.
+
+4.Installion (store.docker.com)
+   1.Installing on Windows 10 (Pro or Enterprise) -
+     -This is the best experience on Windows, but due to OS feature requirements, it only works on the Pro and Enterprise editions of Windows 10(w latest update rollups).
+      You need to install "Docker for Windows" from the Docker Store.With this Edition I recommend using PowerShell for the best CLI experience
+
+   2.Installing on Windows 7, 8, or 10 Home Edition -
+     -Unfortunately, Microsoft's OS features for Docker and Hyper-V don't work in these older versions, and "Windows 10 Home" edition doesn't have Hyper-V,so you'll 
+     need o install the "Docker Toolbox", which is a slightly different approach to using Docker with a VirtualBox VM. his means Docker will be running in a Virtual 
+     Machine that sits behind the IP of your OS, and uses NAT to access the internet.
+     - NOTE FOR TOOLBOX USERS: For all examples that use http://localhost , you'll need to replace with http://192.168.99.100
+ 
+  3.Installing on Linux -
+    -Do *not* use your built in default packages like apt/yum install docker.io  because those packages are old and not the Official Docker-Built packages. 
+     I prefer to use the Docker's automated script to add their repository and install all dependencies: curl -sSL https://get.docker.com/ | sh
+     Three way to install - 1.script 2.store 3.docker-machine
+       1.script - get.docker.com(latest edge release) : curl -sSL https://get.docker.com/ | sh x
+
+
+5. docker command line structure -
+    1.old (still work ): docker command options (ex: docker run nginx)
+    2. new : docker command sub-command option  (ex: docker container run nginx)
+
+6. An image is libaries, depencies and source code that all make ur application and conatiner is running instance of that image.we get all our images from registeries
+   called "docker hub"(hub.docker.com)
+
+----docker commands -------
+ 
+docker container commands ----
+
+1. To check docker working and vesrion of docker ,use 
+       docker version,  docker --version
+
+2. To show most valuabel configuration for doker use 
+       docker info 
+
+3. To pull image from registery use 
+       docker pull image_name
+
+4.To create and run the container from the downloaded image use 
+      docker run image_name
+
+5. To directly download and run container use 
+      docker run image_name
+
+6. To show the list of images use 
+      docker images 
+
+7. To show the runing containers use 
+     docker container ps/ls 
+
+8. To show all the stopped and running conatiners use
+     docker container ps/ls -a
+
+9. To get interactive mode in container use 
+    docker run -it iamge_name bash 
+
+10. for port forwarding a conatiner we use 
+    docker run -it -p 80:8080 image_name bash 
+
+11. to run the container background with out interactive mode 
+    docker run -d -p 80:8080 image_name 
+
+12. To provide name to a container 
+    docker run -it -p 80:8080 --name web1 image_name bash 
+
+13. To get interactrive mode to started container 
+      docker exec -it 2304da2b9004 bash
+
+14. To stop a running  container use 
+    docker container stop container_id 
+
+15. To start stopped container use 
+      docker container start container_id 
+
+16. To know logs of particular container , use
+     docker logs continaer_id/name
+
+17.To know runing process inside a container , use 
+     docker container top container_id/name
+
+18.To remove the stopped conatiners , use
+    docker conatiner rm continer_id
+
+19.To remove running container , use
+    docker continer rm -f conatiner_id
+ 
+20.To rmeove image , use 
+    docker image rmi image_id
+
+21.To show all runing process in host (linux)
+    ps aux
+
+22.To know  container config including metdata , use
+    docker inspect container_id
+
+23.To know live status/performance data(cpu,memory,i/o speed..etc) for all containers
+      docker stats
+
+24. To get start and  interactive at same time to a stopped ubuntu container
+    docker start -ai ubuntu
+
+25. To know the list of the ports mapping to a particular container
+      docker port mysql_db
+
+26.To do the filtering in 'docker inspect' command , we use format command 
+    docker container inspect --format '{{ .NetworkSettings.IPAddress}}' ubuntu (for Linux) - it shows ipaddress of that conatiner
+    docker container inspect --format "{{ .NetworkSettings.IPAddress}}" ubuntu (In wiondows) - it shows ipaddress of that conatiner  
+
+27. To know ip address , docker zero and ethernet for each conatiner , use 
+    ifconfig
+
+
+---- Networking commands ----
+
+--> Docker Networks : Defaults concepts-
+     1.Each conatiner connect to a private virtual network "Bridge"
+     2.Each virtual network routes through NAT firewall on host ip.
+     3.All containers on a virtual network can talk to each other without -p.
+     4.Best prcatise is to create a new virtual network for ecah app :
+        #.network "my_web_app" for mysql and php/httpd containers
+        #.network "my_net" for mongo and nodejs conatiners
+
+--> Docker network: Default security -
+     1.craete ur apps so frontend/backend sit on smae docker network.
+     2.Their inter-communication never leave host.
+     3.All externally exposed ports closed by default.
+     4.you must manually expose via -p, which is better default security!
+     5.This gets even better later with swarm and overlay network.
+
+--> To talk  containers with each other , then the both conatiners should be in smae network , here our network is automatically  associated with ethernet interface 
+    on our host and ethernet acts as firewall for container inbound and outbound traffics. if we open any port with -p , then ethernet will listen the inbound/outbund
+    traffic.
+
+--> There are # types are network by default docker provides
+     1.Bridge  2.Host   3.None
+
+     1.Bridge Network - it is default docker virtual network which is NAT'ed behind the host ip. dependind up on the os it is also called as Docker Zero network.
+      it bridges through the NAT firewall to to physical network that host is connected to.
+ 
+     2.Host Network - it gains performace by skipping virtual network of docker and attached the conatiner directly to host interface
+       there's pros and cons to that because it prevents the security boundaries of he containerization from protecting the interface of that container.
+       But it also, in certain situations, can improve the performance of high throughput networking and get around a few other issues with specific special 
+       software out there.
+
+     3. None Network - it removes eth0 and only leaves you with localhost interface in container.
+
+--> Network Driver - Built-in or third party extensions that give vitural network feature.
+
+28.To List the number of networks , we use 
+    docker network ls
+
+29.To know list of container attached to paricular network , use
+   docker network inspect <network_name>
+
+
+30.To spawns a new virtual network for u to attach conatiners
+   docker network create <network_name> : it craeted new network with default bridge network 
+
+31.To attach a newly created network to a container, use 
+   docker run -d --name webx --network <network_name> nginx 
+    check it with docker inspect <network_name>
+
+32.docker network connect <network_name> <conatiner_id>
+   it dynamically craetes a NIC in a container on an an existing network and attach it conatainer.
+   check it docker inspcet container_id , in network section
+
+33.docker network connect <network_name> <conatiner_id> 
+    it dynamically craetes a NIC from a container on a specfic virtual network. 
+
+--> Best practise to talk containers with each other is avoid ipadress becoz , they are dynamically assigned if a container is gone down and when it up ipadress of
+    will chnage. best is depends on docker DNS naming.
+
+--> docker DNS : docker demons has a built-in DNS server that conatiners use by default. docker uses the conatiner names as the equivalent of a hostname for conatiners
+    taking to each other.Docker defaults the hostname to the conatianer's name,but also we can set alias.
+
+34.if we want conatiners talk to each other , create a network and create 2 nginx containers with newly craeted network and ping to one anthore.
+    docker network create my_net
+    docker run -d --name myweb2 --network my_net nginx 
+    docker run -d --name myweb3 --network my_net nginx
+    docker container exec -it myweb2 ping myweb3 ( command to ping one conatiner to ecah other ).
+
+--> But the default bridge network does not have DNS server built into by default ,so u can use --link 
+
+
+
+----Image commands ------
+
+1.waht is image -
+  1.Image is a collection of root file system changes and corresponding execution parameters for use within a container run time. Inside image , there's not a complete
+  OS, no kernel , No kernal modules like drivers. 
+  2.Its really just the binaries that your application needs because the host provide kernel.it is small as one file like go lang stastic binary.
+  3. you could have very big image as a ubuntu distro with apt ,apache,php and more installed which become gigabytes size
+  
+
+
+
+ 
+
+
+
+      

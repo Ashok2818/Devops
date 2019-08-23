@@ -1,0 +1,16 @@
+---GIT ---
+
+git init
+
+git config --global user.name "Ashok"
+git config --global user.mail "ashok.rb94@gmail.com"
+
+git remote add origin https://github.com/Ashok2818/git_pract.git
+
+git pull origin master --allow-unrelated-histories
+
+git checkout --track origin/dev
+
+http://farm01-ufm-dev.was.metro.info:20100/ufm/fr/mcc/v1/ufmp 
+
+148d30287d9b4211801c91bb3c7f7727
